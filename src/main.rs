@@ -30,6 +30,12 @@ impl<T: Clone + 'static> Lazy<Fn()->T> {
     }
 }
 
+impl<T> Lazy<Fn()->T> {
+    pub fn apply<R, F>(self, f: F) -> Lazy<Fn()->R> where F: Fn(T)->R + 'static {
+        Lazy(Box::new(move || f(self.0())))
+    }
+}
+
 trait ToLazy {
     fn lazy(self) -> Lazy<Fn()->Self>;
 }
